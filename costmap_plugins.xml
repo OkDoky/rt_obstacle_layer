@@ -1,0 +1,6 @@
+<library path="librt_obstacle_layer">
+    <class type="rt_obstacle_layer::RtObstacleLayer" base_class_type="costmap_2d::Layer">
+        <description>Using LaserScan data and pcl to costmap_2d</description>
+    </class>
+</library>
+  
