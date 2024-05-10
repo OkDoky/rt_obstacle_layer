@@ -1,22 +1,12 @@
 <launch>
-    <arg name="use_local_costmap"       default="true"/>
-    <arg name="global_planner_type"     default="astar"/>
-    <arg name="goal_topic"              default="move_base_simple/goal"/>
     <arg name="robot_base_frame"        default="base_footprint"/>
     <arg name="odom_frame"              default="odom"/>
     <arg name="map_frame"               default="map"/>
     <arg name="scan_frame"              default="base_scan"/>
 
-    <node pkg="costmap_2d" type="costmap_2d_node" name="local_costmap" if="$(eval use_local_costmap)" respawn="true" ns="r1">
-        <rosparam file="$(find cai_nav)/param/$(env ROBOT_MODEL)/single_local_costmap_params.yaml" command="load"/>
+    <node pkg="costmap_2d" type="costmap_2d_node" name="local_costmap">
+        <rosparam file="$(find rt_obstacle_layer)/param/single_local_costmap_params.yaml" command="load"/>
         <param name="~costmap/global_frame"  value="$(arg robot_base_frame)"/>
         <param name="~costmap/robot_base_frame"  value="$(arg robot_base_frame)"/>
-    </node>
-    <node pkg="global_planner" type="planner" name="global_planner" ns="r1">
-        <rosparam file="$(find cai_nav)/param/$(env ROBOT_MODEL)/single_global_costmap_params.yaml" command="load"/>
-        <param name="use_dijkstra"      value="false" if="$(eval global_planner_type == 'dijkstras')"/>
-        <param name="~costmap/global_frame"  value="$(arg map_frame)"/>
-        <param name="~costmap/robot_base_frame"  value="$(arg robot_base_frame)"/>
-        <remap from="global_planner/goal" to="$(arg goal_topic)"/>
     </node>
 </launch>
