@@ -207,6 +207,14 @@ void RtObservationBuffer::purgeStaleObservations()
   }
 }
 
+void RtObservationBuffer::resetObservations()
+{
+  if (!observation_list_.empty())
+  {
+    observation_list_.erase(observation_list_.begin(), observation_list_.end());
+  }
+}
+
 bool RtObservationBuffer::isCurrent() const
 {
   if (expected_update_rate_ == ros::Duration(0.0))

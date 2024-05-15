@@ -127,6 +127,7 @@ public:
    * @brief Reset last updated timestamp
    */
   void resetLastUpdated();
+  void resetObservations();
 
 private:
   /**
