@@ -44,6 +44,7 @@
 #include <rt_obstacle_layer/rt_observation_buffer.h>
 
 #include <nav_msgs/OccupancyGrid.h>
+#include <std_srvs/SetBool.h>
 
 #include <sensor_msgs/LaserScan.h>
 #include <laser_geometry/laser_geometry.h>
@@ -111,6 +112,8 @@ public:
   void pointCloud2Callback(const sensor_msgs::PointCloud2ConstPtr& message,
                            const boost::shared_ptr<rt_obstacle_layer::RtObservationBuffer>& buffer);
 
+  bool resetObstacleLayerCallback(std_srvs::SetBool::Request& req, std_srvs::SetBool::Response& res);
+
 protected:
   virtual void setupDynamicReconfigure(ros::NodeHandle& nh);
 
@@ -147,6 +150,9 @@ protected:
   dynamic_reconfigure::Server<rt_obstacle_layer::RtObstacleLayerConfig> *dsrv_;
 
   int combination_method_;
+
+  // reset service
+  ros::ServiceServer reset_server_;
 
 private:
   void reconfigureCB(rt_obstacle_layer::RtObstacleLayerConfig &config, uint32_t level);

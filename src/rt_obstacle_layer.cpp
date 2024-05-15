@@ -71,6 +71,7 @@ void RtObstacleLayer::onInitialize()
 
   RtObstacleLayer::matchSize();
   current_ = true;
+  reset_server_ = nh.advertiseService("reset_obstacle", &RtObstacleLayer::resetObstacleLayerCallback, this);
 
   global_frame_ = layered_costmap_->getGlobalFrameID();
   double transform_tolerance;
@@ -311,6 +312,23 @@ void RtObstacleLayer::pointCloud2Callback(const sensor_msgs::PointCloud2ConstPtr
   buffer->lock();
   buffer->bufferCloud(*message);
   buffer->unlock();
+}
+
+bool RtObstacleLayer::resetObstacleLayerCallback(std_srvs::SetBool::Request& req, 
+                                                 std_srvs::SetBool::Response& res)
+{
+  resetMaps();
+  bool current = true;
+  // get the marking observations
+  for (unsigned int i = 0; i < marking_buffers_.size(); ++i)
+  {
+    marking_buffers_[i]->lock();
+    marking_buffers_[i]->resetObservations();
+    marking_buffers_[i]->unlock();
+  }
+  res.success = true;
+  res.message = "succeded to reset obstacle layer";
+  return true;
 }
 
 void RtObstacleLayer::updateBounds(double robot_x, double robot_y, double robot_yaw, double* min_x,
