@@ -177,7 +177,7 @@ void RtObservationBuffer::bufferCloud(const sensor_msgs::PointCloud2& cloud)
   }
 
   // if the update was successful, we want to update the last updated time
-  last_updated_ = ros::Time::now();
+  resetLastUpdated();
 
   // we'll also remove any stale observations from the list
   purgeStaleObservations();
@@ -198,6 +198,12 @@ void RtObservationBuffer::getObservations(std::vector<RtObservation>& observatio
 
 void RtObservationBuffer::purgeStaleObservations()
 {
+  double step_time = (ros::Time::now() - last_updated_).toSec();
+  if (step_time >= expected_update_rate_.toSec())
+  {
+    ROS_WARN("[ObservationBuffer] step time over expecte rate.. %.6f", step_time);
+    resetObservations();
+  }
   if (!observation_list_.empty())
   {
     list<RtObservation>::iterator obs_it = observation_list_.begin();
